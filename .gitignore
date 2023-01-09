@@ -1,0 +1,21 @@
+# Minimal client node modules
+MinimalClient/build/
+MinimalClient/node_modules/
+
+# Dependency directory
+node_modules
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Ignore built ts files
+build/**/*
+
+/.vs
+/.vscode
+
+# Code coverage results
+*.coverage
+*.coveragexml
+coverage/
