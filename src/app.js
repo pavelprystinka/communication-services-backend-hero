@@ -1,26 +1,26 @@
 const express = require("express")
 const { v4: uuidv4 } = require('uuid')
 
-const { CommunicationIdentityClient } = require('@azure/communication-identity');
+const { CommunicationIdentityClient } = require('@azure/communication-identity')
 
 const {usersRepository } = require('./user-repository')
 
-const connectionString = process.env['COMMUNICATION_SERVICES_CONNECTION_STRING'];
-const acsEndpoint = process.env['COMMUNICATION_SERVICES_ENDPOINT'];
+const connectionString = process.env['COMMUNICATION_SERVICES_CONNECTION_STRING']
+const acsEndpoint = process.env['COMMUNICATION_SERVICES_ENDPOINT']
 
-const identityClient = new CommunicationIdentityClient(connectionString);
+const identityClient = new CommunicationIdentityClient(connectionString)
 
-const app = express();
-app.use(express.json());  
+const app = express()
+app.use(express.json())
 
 
 app.get("/acs_info", (req, res) => {
-    res.json({"endpoint": acsEndpoint});
-});
+    res.json({"endpoint": acsEndpoint})
+})
 
 app.get("/users", (req, res) => {
-    res.json(usersRepository);
-});
+    res.json(usersRepository)
+})
 
 app.post("/users", async (req, res) => {
     let { name } = { ...req.body }
@@ -30,21 +30,21 @@ app.post("/users", async (req, res) => {
     }
     user.communicationIdentity = await getCommunicationIdentity(user)
     usersRepository.push(user)
-    res.json(user);
-});
+    res.json(user)
+})
 
 
 app.get("/users/:id/token/call", async (req, res) => {
     return res.json(await getUserWithToken(req.params.id, ["voip"]))
-});
+})
 
 app.get("/users/:id/token/chat", async (req, res) => {
     return res.json(await getUserWithToken(req.params.id, ["chat"]))
-});
+})
 
 app.get("/users/:id/token/call-with-chat", async (req, res) => {
     return res.json(await getUserWithToken(req.params.id, ["voip", "chat"]))
-});
+})
 
 
 
@@ -60,14 +60,14 @@ async function getUserWithToken(userId, services) {
 
 async function getCommunicationIdentity(user) {
     if (!user.communicationIdentity) {
-        user.communicationIdentity = await identityClient.createUser();
+        user.communicationIdentity = await identityClient.createUser()
     }
     return user.communicationIdentity
 }
 
 async function getToken(communicationIdentity, services) {
-    let tokenResponse = await identityClient.getToken(communicationIdentity, services);
-    const { token, expiresOn } = tokenResponse;
+    let tokenResponse = await identityClient.getToken(communicationIdentity, services)
+    const { token, expiresOn } = tokenResponse
     return token
 }
 
@@ -80,4 +80,4 @@ function ensureAllUsersHaveCommunicationIdentity() {
 ensureAllUsersHaveCommunicationIdentity()
 
 
-module.exports = app;
+module.exports = app
