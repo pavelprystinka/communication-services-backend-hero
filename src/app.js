@@ -3,10 +3,11 @@ const { v4: uuidv4 } = require('uuid')
 
 const { CommunicationIdentityClient } = require('@azure/communication-identity')
 
-const {usersRepository } = require('./user-repository')
+const appSettings = require('../appsettings.json');
+const {usersRepository} = require('./user-repository')
 
-const connectionString = process.env['COMMUNICATION_SERVICES_CONNECTION_STRING'] || '<COMMUNICATION_SERVICES_CONNECTION_STRING>'
-const acsEndpoint = process.env['COMMUNICATION_SERVICES_ENDPOINT'] || '<COMMUNICATION_SERVICES_ENDPOINT>'
+const connectionString = process.env['COMMUNICATION_SERVICES_CONNECTION_STRING'] || appSettings.ResourceConnectionString
+const acsEndpoint = process.env['COMMUNICATION_SERVICES_ENDPOINT'] || appSettings.EndpointUrl
 
 const identityClient = new CommunicationIdentityClient(connectionString)
 
